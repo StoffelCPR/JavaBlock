@@ -1,13 +1,36 @@
 package de.cpelzer.aufgaben.datum;
 
+/**
+ * Datum class
+ * 
+ * @author Christoph Pelzer on 11.10.17
+ *
+ */
 public class Datum {
-
+	/**
+	 * the length of each month
+	 */
 	public static final int[] monatslaengen = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
+	/**
+	 * the name of the days of a week
+	 */
 	public static final String[] wochentage = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
 
+	/**
+	 * holds the values for "Datum"
+	 */
 	private int tag, monat, jahr;
 
+	/**
+	 * MonatsLaenge (the length of a month)
+	 * 
+	 * @param monat
+	 *            takes one month as parameter
+	 * @param jahr
+	 *            takes the year as parameter
+	 * @return returns the length of the month.
+	 */
 	public static int getMonatslaenge(int monat, int jahr) {
 		if (monat == 2) {
 			if (isSchaltjahr(jahr)) {
@@ -17,6 +40,13 @@ public class Datum {
 		return monatslaengen[monat - 1];
 	}
 
+	/**
+	 * Checks if a year is leap-year
+	 * 
+	 * @param jahr
+	 *            takes the year as parameter
+	 * @return returns true if the year is a leap year/false if it's not
+	 */
 	public static boolean isSchaltjahr(int jahr) {
 		if (jahr % 4 == 0 && jahr % 100 != 0 || jahr % 400 == 0) {
 			return true;
@@ -25,6 +55,14 @@ public class Datum {
 		}
 	}
 
+	/**
+	 * Checks if a "Datum" a equals b
+	 * 
+	 * @param a
+	 *            takes (called on an instance of Datum e.q. b) a parameter of an
+	 *            Object "Datum"
+	 * @return returns true if it equals fully/ false if it doesn't
+	 */
 	public boolean equals(Datum a) {
 		if (this.jahr == a.getJahr() && this.monat == a.getMonat() && this.tag == a.getTag()) {
 			return true;
@@ -33,6 +71,14 @@ public class Datum {
 		}
 	}
 
+	/**
+	 * Checks if the day is the same
+	 * 
+	 * @param a
+	 *            takes (called of an instance of datum e.q b) a parameter object of
+	 *            datum
+	 * @return true if day and month are equal(the year doesnt matter)/false if not
+	 */
 	public boolean isGleicherTag(Datum a) {
 		if (this.monat == a.getMonat() && this.tag == a.getTag()) {
 			return true;
@@ -41,10 +87,23 @@ public class Datum {
 		}
 	}
 
+	/**
+	 * returns the String of day/month/year of the object
+	 */
 	public String toString() {
 		return "" + this.tag + "/" + this.monat + "/" + this.jahr;
 	}
 
+	/**
+	 * Constructor of Datum
+	 * 
+	 * @param tag
+	 *            takes a day as parameter
+	 * @param monat
+	 *            takes the month as parameter
+	 * @param jahr
+	 *            takes the year as parameter
+	 */
 	public Datum(int tag, int monat, int jahr) {
 		if (jahr > 1800 && jahr < 2100) {
 			setJahr(jahr);
@@ -58,27 +117,33 @@ public class Datum {
 							throw new InvalidDateException("There is no day like the " + tag + " of Feburary!");
 						}
 					} else {
-						if(tag >= 1 && tag <= monatslaengen[1]) {
+						if (tag >= 1 && tag <= monatslaengen[1]) {
 							setTag(tag);
 						} else {
 							throw new InvalidDateException("your day is not a day of feburary");
 						}
 					}
-				}
-				else if (tag >= 1 && tag <= monatslaengen[monat - 1] ){
+				} else if (tag >= 1 && tag <= monatslaengen[monat - 1]) {
 					setTag(tag);
 				} else {
 					throw new InvalidDateException("There is no day like the " + tag + " of " + monat);
-					} 
 				}
-				else {
+			} else {
 				throw new InvalidDateException("There is no month like " + monat + ".");
-				}
-		} else {
-					throw new DateOutOfRangeException(jahr + "is outside of 1800 and 2100");
-				}
 			}
+		} else {
+			throw new DateOutOfRangeException(jahr + "is outside of 1800 and 2100");
+		}
+	}
 
+	/**
+	 * Constructor of Datum with only Days as param
+	 * 
+	 * @param tag
+	 *            takes a day 1...366 as param.
+	 * @param jahr
+	 *            takes the year as param
+	 */
 	public Datum(int tag, int jahr) {
 		if (jahr >= 1800 && jahr <= 2100) {
 			int month = 0;
@@ -112,11 +177,15 @@ public class Datum {
 		}
 	}
 
+	/**
+	 * 
+	 * @return which day is tomorrow according to the Object morgen is called on.
+	 */
 	public Datum morgen() {
 		int d = this.tag;
 		int m = this.monat;
 		int y = this.jahr;
-		if ((d+1) >= monatslaengen[this.monat-1]) {
+		if ((d + 1) >= monatslaengen[this.monat - 1]) {
 			if (m == 12) {
 				if (y == 2099) {
 					throw new DateOutOfRangeException("The day after today is not in 2099 anymore");
@@ -135,6 +204,10 @@ public class Datum {
 		return new Datum(d, m, y);
 	}
 
+	/**
+	 * 
+	 * @return which day was yesterday according to the Object gestern is called on.
+	 */
 	public Datum gestern() {
 		int d = this.tag;
 		int m = this.monat;
@@ -158,26 +231,56 @@ public class Datum {
 		return new Datum(d, m, y);
 	}
 
+	/**
+	 * setter
+	 * 
+	 * @param tag
+	 */
 	public void setTag(int tag) {
 		this.tag = tag;
 	}
 
+	/**
+	 * setter
+	 * 
+	 * @param monat
+	 */
 	public void setMonat(int monat) {
 		this.monat = monat;
 	}
 
+	/**
+	 * setter
+	 * 
+	 * @param jahr
+	 */
 	public void setJahr(int jahr) {
 		this.jahr = jahr;
 	}
 
+	/**
+	 * getter
+	 * 
+	 * @return the day of the object
+	 */
 	public int getTag() {
 		return this.tag;
 	}
 
+	/**
+	 * getter
+	 * 
+	 * @return the month of the object
+	 */
 	public int getMonat() {
 		return this.monat;
 	}
 
+	/**
+	 * getter
+	 * 
+	 * @return the year of the object
+	 */
 	public int getJahr() {
 		return this.jahr;
 	}
