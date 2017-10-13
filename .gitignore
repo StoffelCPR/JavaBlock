@@ -1,6 +1,7 @@
 # Compiled class file
 *.class
-
+!DateOutOfRangeException.class
+!InvalidDateException.class
 # Log file
 *.log
 
