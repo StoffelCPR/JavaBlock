@@ -15,7 +15,7 @@ public class Datum {
 	/**
 	 * the name of the days of a week
 	 */
-	public static final String[] wochentage = { "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So" };
+	public static final String[] wochentage = { "So", "Mo", "Di", "Mi", "Do", "Fr", "Sa" };
 
 	/**
 	 * holds the values for "Datum"
@@ -283,5 +283,29 @@ public class Datum {
 	 */
 	public int getJahr() {
 		return this.jahr;
+	}
+
+	public String getWochentag() {
+		// Doomsday des jahres des this objektes ausrechnen
+		int jahresZahl = (this.getJahr() % 100);
+		int doomsday;
+		int lastFebSchaltjahr = 60;
+		int lastFebNormjahr = 59;
+		int day = this.getTag();
+		boolean isSchaltjahr = isSchaltjahr(this.getJahr());
+		doomsday = (jahresZahl + (jahresZahl / 4) + (2 - ((this.getJahr() / 100) % 4) * 2)) % 7;
+		for (int i = 0; i < this.getMonat() - 1; i++) {
+			day += monatslaengen[i];
+		}
+		
+		if(isSchaltjahr) {
+			while(lastFebSchaltjahr > day) {
+				lastFebSchaltjahr -= 7;
+			}
+			day = day - lastFebSchaltjahr + doomsday;
+		}
+
+		return wochentage[day];
+
 	}
 }
