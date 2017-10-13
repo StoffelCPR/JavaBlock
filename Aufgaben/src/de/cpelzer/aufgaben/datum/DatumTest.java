@@ -56,4 +56,31 @@ public class DatumTest {
 		new Datum(17,5,2150);
 		
 	}
+	
+	@Test
+	public void testDatum2() {
+		assertEquals(true, new Datum(5,5,2016).isGleicherTag(new Datum(5,5,2016)));
+	}
+	
+	@Test
+	public void testDatum2Konstruktor() {
+		assertEquals("31/12/2017", new Datum(365,2017).toString());
+		assertEquals("1/5/2016", new Datum(122, 2016).toString());
+		
+	}
+	@Test
+	public void testMorgen() {
+		assertEquals("2/1/2017", new Datum(1, 1, 2017).morgen().toString());
+		assertEquals("5/1/2017", new Datum(4, 1, 2017).morgen().toString());
+		assertEquals("1/3/2016", new Datum(29, 2, 2016).morgen().toString());
+	}
+	@Test
+	public void testGestern() {
+		assertEquals("28/2/2016", new Datum(29, 02, 2016).gestern().toString());
+		assertEquals("29/2/2016", new Datum(1, 3, 2016).gestern().toString());
+	}
+	@Test
+	public void testGetWochentag() {
+		assertEquals("Fr", new Datum(20,10,2017).getWochentag());
+	}
 }

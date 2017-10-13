@@ -1,5 +1,7 @@
 package de.cpelzer.aufgaben.datum;
 
+import java.util.Arrays;
+
 /**
  * Datum class
  * 
@@ -148,27 +150,31 @@ public class Datum {
 		if (jahr >= 1800 && jahr <= 2100) {
 			int month = 0;
 			setJahr(jahr);
-			if (tag == 366) {
-				for (int i = 0; tag >= 31; i++) {
-					if (i == 1) {
+			if (isSchaltjahr(jahr)) {
+				int i = 0;
+				int[] mL = Arrays.copyOf(monatslaengen, 12);
+				mL[1] = 29;
+				while(tag > mL[i]) {
+					if(i == 1) {
 						tag -= 29;
-						month = 2;
 					} else {
 						tag -= monatslaengen[i];
-						month = i + 1;
 					}
+					i++;
+					month++;
 				}
 				setTag(tag);
-				setMonat(month);
-				setJahr(jahr);
+				setMonat(month+1);
 			} else if (tag >= 1 && tag <= 365) {
-				for (int i = 0; tag >= 31; i++) {
+				int i = 0;
+				while(tag > monatslaengen[i]) {
+					
 					tag -= monatslaengen[i];
-					month = i + 1;
+					i++;
+					month++;
 				}
 				setTag(tag);
-				setMonat(month);
-				setJahr(jahr);
+				setMonat(month+1);
 			} else {
 				throw new InvalidDateException("The number " + tag + " is not inside one year");
 			}
@@ -223,7 +229,13 @@ public class Datum {
 				}
 			} else {
 				m--;
-				d = monatslaengen[m - 1];
+				if(isSchaltjahr(this.getJahr())) {
+					int[] monatLaenge = Arrays.copyOf(monatslaengen, 12);
+					monatLaenge[1] = 29;
+					d = monatLaenge[m - 1];
+				} else {
+					d = monatslaengen[m - 1];
+				}
 			}
 		} else {
 			d--;
@@ -286,26 +298,52 @@ public class Datum {
 	}
 
 	public String getWochentag() {
-		// Doomsday des jahres des this objektes ausrechnen
-		int jahresZahl = (this.getJahr() % 100);
-		int doomsday;
-		int lastFebSchaltjahr = 60;
-		int lastFebNormjahr = 59;
 		int day = this.getTag();
-		boolean isSchaltjahr = isSchaltjahr(this.getJahr());
-		doomsday = (jahresZahl + (jahresZahl / 4) + (2 - ((this.getJahr() / 100) % 4) * 2)) % 7;
+		int jahrHunderDoomsday = 2 - ((this.getJahr() / 100) % 4) * 2;
+		int jahrEndZahl = this.getJahr() % 100;
+		int doomsday = (jahrEndZahl + (jahrEndZahl / 4) + jahrHunderDoomsday) % 7;
+
 		for (int i = 0; i < this.getMonat() - 1; i++) {
 			day += monatslaengen[i];
-		}
-		
-		if(isSchaltjahr) {
-			while(lastFebSchaltjahr > day) {
-				lastFebSchaltjahr -= 7;
+			if(i == 1 && isSchaltjahr(this.getJahr())) {
+				day += 1;
 			}
-			day = day - lastFebSchaltjahr + doomsday;
 		}
 
-		return wochentage[day];
+		if (isSchaltjahr(this.getJahr())) {
 
+			if(day >= 60) {
+				day -= 60;				
+				day %= 7;
+				day += doomsday;
+				
+			}	else {
+				while(day < 60) {
+					day += 7;
+				}
+				day -= 60;
+				day += doomsday;
+				day %=7;
+				
+			}
+		} else {
+			if (day >= 59) {
+				day -= 59;
+				day %= 7;
+				day += doomsday;
+				if(day >= 7) {
+					day %= 7; 
+				}
+				System.out.println(day);
+			} else {
+				while(day < 59) {
+					day += 7;
+				}
+				day -= 59;
+				day += doomsday;
+				day %=7;
+			}
+		}
+		return wochentage[day];
 	}
 }
