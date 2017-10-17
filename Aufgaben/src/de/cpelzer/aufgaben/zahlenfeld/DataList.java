@@ -7,28 +7,26 @@ import java.util.ArrayList;
 public class DataList {
 	private ArrayList<Integer> list = new ArrayList<Integer>();
 	private String zeile;
-	
+
 	public DataList(ArrayList<Integer> list) {
-		
+
 	}
-	
-	@SuppressWarnings("unused")
+
 	public DataList(String filename) {
 		String s = "";
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(filename));
-			while((zeile = br.readLine()) == null) {
-				
+			while ((zeile = br.readLine()) == null) {
+
 				char[] arr = zeile.toCharArray();
-				
-				if(arr.length == 0) {
+
+				if (arr.length == 0) {
 					continue;
-				} else if(arr[0] == '%') {
+				} else if (arr[0] == '%') {
 					continue;
-				} 
-				else {
-					for(char x : arr) {
-						if(x != ' ') {
+				} else {
+					for (char x : arr) {
+						if (x != ' ') {
 							s += x;
 						}
 					}

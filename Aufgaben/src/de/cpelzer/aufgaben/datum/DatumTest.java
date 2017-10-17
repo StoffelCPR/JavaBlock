@@ -35,52 +35,58 @@ public class DatumTest {
 		assertEquals(true, new Datum(5, 5, 2016).equals(new Datum(5, 5, 2016)));
 		assertEquals(false, new Datum(5, 5, 2016).equals(new Datum(6, 5, 2016)));
 	}
+
 	@Test
 	public void testIsGleicherTag() {
-		assertEquals(true, new Datum(5,5,2016).isGleicherTag(new Datum(5,5,1997)));
-		assertEquals(true, new Datum(5,5,2016).isGleicherTag(new Datum(5,5,2016)));
-		assertEquals(false, new Datum(5,5,2016).isGleicherTag(new Datum(4,5,1997)));
-		assertEquals(false, new Datum(5,5,2016).isGleicherTag(new Datum(6,5,2016)));
+		assertEquals(true, new Datum(5, 5, 2016).isGleicherTag(new Datum(5, 5, 1997)));
+		assertEquals(true, new Datum(5, 5, 2016).isGleicherTag(new Datum(5, 5, 2016)));
+		assertEquals(false, new Datum(5, 5, 2016).isGleicherTag(new Datum(4, 5, 1997)));
+		assertEquals(false, new Datum(5, 5, 2016).isGleicherTag(new Datum(6, 5, 2016)));
 	}
+
 	@Test
 	public void testToString() {
-		assertEquals("5/5/2017", new Datum(5,5,2017).toString());
+		assertEquals("5/5/2017", new Datum(5, 5, 2017).toString());
 	}
-	
-	@Test (expected = InvalidDateException.class)
+
+	@Test(expected = InvalidDateException.class)
 	public void testDatum() {
-		new Datum(35,2,2016);
+		new Datum(35, 2, 2016);
 	}
-	@Test (expected = DateOutOfRangeException.class)
+
+	@Test(expected = DateOutOfRangeException.class)
 	public void testDatum1() {
-		new Datum(17,5,2150);
-		
+		new Datum(17, 5, 2150);
+
 	}
-	
+
 	@Test
 	public void testDatum2() {
-		assertEquals(true, new Datum(5,5,2016).isGleicherTag(new Datum(5,5,2016)));
+		assertEquals(true, new Datum(5, 5, 2016).isGleicherTag(new Datum(5, 5, 2016)));
 	}
-	
+
 	@Test
 	public void testDatum2Konstruktor() {
-		assertEquals("31/12/2017", new Datum(365,2017).toString());
+		assertEquals("31/12/2017", new Datum(365, 2017).toString());
 		assertEquals("1/5/2016", new Datum(122, 2016).toString());
-		
+
 	}
+
 	@Test
 	public void testMorgen() {
 		assertEquals("2/1/2017", new Datum(1, 1, 2017).morgen().toString());
 		assertEquals("5/1/2017", new Datum(4, 1, 2017).morgen().toString());
 		assertEquals("1/3/2016", new Datum(29, 2, 2016).morgen().toString());
 	}
+
 	@Test
 	public void testGestern() {
 		assertEquals("28/2/2016", new Datum(29, 02, 2016).gestern().toString());
 		assertEquals("29/2/2016", new Datum(1, 3, 2016).gestern().toString());
 	}
+
 	@Test
 	public void testGetWochentag() {
-		assertEquals("Fr", new Datum(20,10,2017).getWochentag());
+		assertEquals("Fr", new Datum(20, 10, 2017).getWochentag());
 	}
 }
