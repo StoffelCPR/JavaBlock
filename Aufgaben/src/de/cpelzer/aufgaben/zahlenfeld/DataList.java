@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class DataList {
 	private ArrayList<Integer> list = new ArrayList<Integer>();
+	private String zeile;
 	
 	public DataList(ArrayList<Integer> list) {
 		
@@ -14,7 +15,6 @@ public class DataList {
 	@SuppressWarnings("unused")
 	public DataList(String filename) {
 		String s = "";
-		String zeile;
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(filename));
 			while((zeile = br.readLine()) == null) {
