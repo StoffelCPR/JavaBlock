@@ -1,7 +1,5 @@
 package de.cpelzer.aufgaben.datum;
 
-import java.util.Arrays;
-
 /**
  * Datum class
  * 
@@ -197,9 +195,7 @@ public class Datum {
 			} else {
 				m--;
 				if (isSchaltjahr(this.getJahr())) {
-					int[] monatLaenge = Arrays.copyOf(monatslaengen, 12);
-					monatLaenge[1] = 29;
-					d = monatLaenge[m - 1];
+					d = monatslaengenLeap[m - 1];
 				} else {
 					d = monatslaengen[m - 1];
 				}
