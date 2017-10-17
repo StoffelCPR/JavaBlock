@@ -1,0 +1,7 @@
+%Testdaten 
+
+21 
+34 
+81 
+2 
+%Ende der Testdatei 

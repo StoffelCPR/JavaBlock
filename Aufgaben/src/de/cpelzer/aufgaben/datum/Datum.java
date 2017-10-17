@@ -14,6 +14,8 @@ public class Datum {
 	 */
 	public static final int[] monatslaengen = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
+	public static final int[] monatslaengenLeap = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
 	/**
 	 * the name of the days of a week
 	 */
@@ -34,12 +36,11 @@ public class Datum {
 	 * @return returns the length of the month.
 	 */
 	public static int getMonatslaenge(int monat, int jahr) {
-		if (monat == 2) {
-			if (isSchaltjahr(jahr)) {
-				return 29;
-			}
+		if (isSchaltjahr(jahr)) {
+			return monatslaengenLeap[monat - 1];
+		} else {
+			return monatslaengen[monat - 1];
 		}
-		return monatslaengen[monat - 1];
 	}
 
 	/**
@@ -66,7 +67,7 @@ public class Datum {
 	 * @return returns true if it equals fully/ false if it doesn't
 	 */
 	public boolean equals(Datum a) {
-		if (this.jahr == a.getJahr() && this.monat == a.getMonat() && this.tag == a.getTag()) {
+		if (this.getJahr() == a.getJahr() && this.getMonat() == a.getMonat() && this.getTag() == a.getTag()) {
 			return true;
 		} else {
 			return false;
@@ -82,7 +83,7 @@ public class Datum {
 	 * @return true if day and month are equal(the year doesnt matter)/false if not
 	 */
 	public boolean isGleicherTag(Datum a) {
-		if (this.monat == a.getMonat() && this.tag == a.getTag()) {
+		if (this.getMonat() == a.getMonat() && this.getTag() == a.getTag()) {
 			return true;
 		} else {
 			return false;
@@ -93,7 +94,7 @@ public class Datum {
 	 * returns the String of day/month/year of the object
 	 */
 	public String toString() {
-		return "" + this.tag + "/" + this.monat + "/" + this.jahr;
+		return "" + this.getTag() + "/" + this.getMonat() + "/" + this.getJahr();
 	}
 
 	/**
@@ -107,35 +108,12 @@ public class Datum {
 	 *            takes the year as parameter
 	 */
 	public Datum(int tag, int monat, int jahr) {
-		if (jahr > 1800 && jahr < 2100) {
-			setJahr(jahr);
-			if (monat >= 1 && monat <= 12) {
-				setMonat(monat);
-				if (monat == 2) {
-					if (isSchaltjahr(jahr)) {
-						if (tag >= 1 && tag <= 29) {
-							setTag(tag);
-						} else {
-							throw new InvalidDateException("There is no day like the " + tag + " of Feburary!");
-						}
-					} else {
-						if (tag >= 1 && tag <= monatslaengen[1]) {
-							setTag(tag);
-						} else {
-							throw new InvalidDateException("your day is not a day of feburary");
-						}
-					}
-				} else if (tag >= 1 && tag <= monatslaengen[monat - 1]) {
-					setTag(tag);
-				} else {
-					throw new InvalidDateException("There is no day like the " + tag + " of " + monat);
-				}
-			} else {
-				throw new InvalidDateException("There is no month like " + monat + ".");
-			}
-		} else {
-			throw new DateOutOfRangeException(jahr + "is outside of 1800 and 2100");
-		}
+
+		setJahr(jahr);
+
+		setMonat(monat);
+
+		setTag(tag);
 	}
 
 	/**
@@ -147,39 +125,28 @@ public class Datum {
 	 *            takes the year as param
 	 */
 	public Datum(int tag, int jahr) {
-		if (jahr >= 1800 && jahr <= 2100) {
-			int month = 0;
+		if (tag <= 1 || tag >= 366) {
+			throw new InvalidDateException("The number " + tag + " is more or less then one year!");
+		} else {
 			setJahr(jahr);
 			if (isSchaltjahr(jahr)) {
 				int i = 0;
-				int[] mL = Arrays.copyOf(monatslaengen, 12);
-				mL[1] = 29;
-				while(tag > mL[i]) {
-					if(i == 1) {
-						tag -= 29;
-					} else {
-						tag -= monatslaengen[i];
-					}
+				while (tag > monatslaengenLeap[i]) {
+					tag -= monatslaengenLeap[i];
 					i++;
-					month++;
+					setMonat(i + 1);
 				}
 				setTag(tag);
-				setMonat(month+1);
-			} else if (tag >= 1 && tag <= 365) {
+			} else {
 				int i = 0;
-				while(tag > monatslaengen[i]) {
-					
+				while (tag > monatslaengen[i]) {
 					tag -= monatslaengen[i];
 					i++;
-					month++;
+					setMonat(i + 1);
 				}
 				setTag(tag);
-				setMonat(month+1);
-			} else {
-				throw new InvalidDateException("The number " + tag + " is not inside one year");
 			}
-		} else {
-			throw new DateOutOfRangeException("The year " + jahr + " is not inside 1800 and 2100");
+
 		}
 	}
 
@@ -188,9 +155,9 @@ public class Datum {
 	 * @return which day is tomorrow according to the Object morgen is called on.
 	 */
 	public Datum morgen() {
-		int d = this.tag;
-		int m = this.monat;
-		int y = this.jahr;
+		int d = this.getTag();
+		int m = this.getMonat();
+		int y = this.getJahr();
 		if ((d + 1) >= monatslaengen[this.monat - 1]) {
 			if (m == 12) {
 				if (y == 2099) {
@@ -229,7 +196,7 @@ public class Datum {
 				}
 			} else {
 				m--;
-				if(isSchaltjahr(this.getJahr())) {
+				if (isSchaltjahr(this.getJahr())) {
 					int[] monatLaenge = Arrays.copyOf(monatslaengen, 12);
 					monatLaenge[1] = 29;
 					d = monatLaenge[m - 1];
@@ -249,7 +216,19 @@ public class Datum {
 	 * @param tag
 	 */
 	public void setTag(int tag) {
-		this.tag = tag;
+		if (isSchaltjahr(this.getJahr())) {
+			if (tag >= 1 && tag <= monatslaengenLeap[this.getMonat() - 1]) {
+				this.tag = tag;
+			} else {
+				throw new InvalidDateException("There is no day like the " + tag + " of " + monat);
+			}
+		} else {
+			if (tag >= 1 && tag <= monatslaengen[this.getMonat() - 1]) {
+				this.tag = tag;
+			} else {
+				throw new InvalidDateException("There is no day like the " + tag + " of " + monat);
+			}
+		}
 	}
 
 	/**
@@ -258,7 +237,11 @@ public class Datum {
 	 * @param monat
 	 */
 	public void setMonat(int monat) {
-		this.monat = monat;
+		if (monat >= 1 && monat <= 12) {
+			this.monat = monat;
+		} else {
+			throw new InvalidDateException("There is no month like " + monat + ".");
+		}
 	}
 
 	/**
@@ -267,7 +250,11 @@ public class Datum {
 	 * @param jahr
 	 */
 	public void setJahr(int jahr) {
-		this.jahr = jahr;
+		if (jahr > 1800 && jahr < 2100) {
+			this.jahr = jahr;
+		} else {
+			throw new DateOutOfRangeException(jahr + "is outside of 1800 and 2100");
+		}
 	}
 
 	/**
@@ -303,45 +290,43 @@ public class Datum {
 		int jahrEndZahl = this.getJahr() % 100;
 		int doomsday = (jahrEndZahl + (jahrEndZahl / 4) + jahrHunderDoomsday) % 7;
 
-		for (int i = 0; i < this.getMonat() - 1; i++) {
-			day += monatslaengen[i];
-			if(i == 1 && isSchaltjahr(this.getJahr())) {
-				day += 1;
-			}
-		}
-
 		if (isSchaltjahr(this.getJahr())) {
-
-			if(day >= 60) {
-				day -= 60;				
+			for (int i = 0; i < this.getMonat() - 1; i++) {
+				day += monatslaengenLeap[i];
+			}
+			if (day >= 60) {
+				day -= 60;
 				day %= 7;
 				day += doomsday;
-				
-			}	else {
-				while(day < 60) {
+
+			} else {
+				while (day < 60) {
 					day += 7;
 				}
 				day -= 60;
 				day += doomsday;
-				day %=7;
-				
+				day %= 7;
+
 			}
 		} else {
+			for (int i = 0; i < this.getMonat() - 1; i++) {
+				day += monatslaengen[i];
+			}
 			if (day >= 59) {
 				day -= 59;
 				day %= 7;
 				day += doomsday;
-				if(day >= 7) {
-					day %= 7; 
+				if (day >= 7) {
+					day %= 7;
 				}
 				System.out.println(day);
 			} else {
-				while(day < 59) {
+				while (day < 59) {
 					day += 7;
 				}
 				day -= 59;
 				day += doomsday;
-				day %=7;
+				day %= 7;
 			}
 		}
 		return wochentage[day];
