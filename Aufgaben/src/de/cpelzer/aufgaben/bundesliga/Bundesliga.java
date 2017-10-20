@@ -11,8 +11,7 @@ public class Bundesliga {
 	private String[] mannschaften = new String[18];
 	
 	private int[][][] heimspiele = new int[18][18][2];
-	private int[][] auswaertsspiele = new int[18][2];
-	
+		
 
 	
 	public Bundesliga (String filename) throws FileNotFoundException {
