@@ -127,23 +127,13 @@ public class Datum {
 			throw new InvalidDateException("The number " + tag + " is more or less then one year!");
 		} else {
 			setJahr(jahr);
-			if (isSchaltjahr(jahr)) {
-				int i = 0;
-				while (tag > monatslaengenLeap[i]) {
-					tag -= monatslaengenLeap[i];
-					i++;
-					setMonat(i + 1);
-				}
-				setTag(tag);
-			} else {
-				int i = 0;
-				while (tag > monatslaengen[i]) {
-					tag -= monatslaengen[i];
-					i++;
-					setMonat(i + 1);
-				}
-				setTag(tag);
+			int i = 0;
+			while (tag > getMonatslaenge(i+1, jahr)) {
+				tag -= getMonatslaenge(i+1, jahr);
+				i++;
+				setMonat(i + 1);
 			}
+			setTag(tag);
 
 		}
 	}
@@ -156,7 +146,7 @@ public class Datum {
 		int d = this.getTag();
 		int m = this.getMonat();
 		int y = this.getJahr();
-		if ((d + 1) >= monatslaengen[this.monat - 1]) {
+		if ((d + 1) >= getMonatslaenge(this.getMonat(), this.getJahr())) {
 			if (m == 12) {
 				if (y == 2099) {
 					throw new DateOutOfRangeException("The day after today is not in 2099 anymore");
