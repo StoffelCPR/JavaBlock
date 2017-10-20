@@ -143,26 +143,19 @@ public class Datum {
 	 * @return which day is tomorrow according to the Object morgen is called on.
 	 */
 	public Datum morgen() {
-		int d = this.getTag();
-		int m = this.getMonat();
-		int y = this.getJahr();
-		if ((d + 1) >= getMonatslaenge(this.getMonat(), this.getJahr())) {
-			if (m == 12) {
-				if (y == 2099) {
-					throw new DateOutOfRangeException("The day after today is not in 2099 anymore");
+		if (this.getTag() == getMonatslaenge(this.getMonat(), this.getJahr())) {
+			if (this.getMonat() == 12) {
+				if (this.getJahr() == 2099) {
+					throw new DateOutOfRangeException("The day after today is after 2099");
 				} else {
-					y += 1;
-					m = 1;
-					d = 1;
+					return new Datum(1, 1, this.getJahr() + 1);
 				}
 			} else {
-				m += 1;
-				d = 1;
+				return new Datum(1, this.getMonat() + 1, this.getJahr());
 			}
 		} else {
-			d += 1;
+			return new Datum(this.getTag() + 1, this.getMonat(), this.getJahr());
 		}
-		return new Datum(d, m, y);
 	}
 
 	/**
@@ -180,15 +173,11 @@ public class Datum {
 				} else {
 					y -= 1;
 					m = 12;
-					d = monatslaengen[11];
+					d = getMonatslaenge(12, y);
 				}
 			} else {
 				m--;
-				if (isSchaltjahr(this.getJahr())) {
-					d = monatslaengenLeap[m - 1];
-				} else {
-					d = monatslaengen[m - 1];
-				}
+				d = getMonatslaenge(m, this.getJahr());
 			}
 		} else {
 			d--;
@@ -202,18 +191,10 @@ public class Datum {
 	 * @param tag
 	 */
 	public void setTag(int tag) {
-		if (isSchaltjahr(this.getJahr())) {
-			if (tag >= 1 && tag <= monatslaengenLeap[this.getMonat() - 1]) {
-				this.tag = tag;
-			} else {
-				throw new InvalidDateException("There is no day like the " + tag + " of " + monat);
-			}
+		if (tag >= 1 && tag <= getMonatslaenge(this.getMonat(), this.getJahr())) {
+			this.tag = tag;
 		} else {
-			if (tag >= 1 && tag <= monatslaengen[this.getMonat() - 1]) {
-				this.tag = tag;
-			} else {
-				throw new InvalidDateException("There is no day like the " + tag + " of " + monat);
-			}
+			throw new InvalidDateException("There is no day like the " + tag + " of " + monat);
 		}
 	}
 
@@ -270,6 +251,10 @@ public class Datum {
 		return this.jahr;
 	}
 
+	/**
+	 * get Wochentag
+	 * @return String wochentag
+	 */ // TODO: vereinfachen mit getMonatslaenge();
 	public String getWochentag() {
 		int day = this.getTag();
 		int jahrHunderDoomsday = 2 - ((this.getJahr() / 100) % 4) * 2;
