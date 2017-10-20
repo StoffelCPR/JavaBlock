@@ -128,8 +128,8 @@ public class Datum {
 		} else {
 			setJahr(jahr);
 			int i = 0;
-			while (tag > getMonatslaenge(i+1, jahr)) {
-				tag -= getMonatslaenge(i+1, jahr);
+			while (tag > getMonatslaenge(i + 1, jahr)) {
+				tag -= getMonatslaenge(i + 1, jahr);
 				i++;
 				setMonat(i + 1);
 			}
@@ -252,53 +252,32 @@ public class Datum {
 	}
 
 	/**
-	 * get Wochentag
-	 * @return String wochentag
-	 */ // TODO: vereinfachen mit getMonatslaenge();
+	 * Errechnet den Wochentag eines Datums
+	 * 
+	 * @return String of the day (Mo, Di, Mi, Do, Fr, Sa, So)
+	 */
 	public String getWochentag() {
+
 		int day = this.getTag();
-		int jahrHunderDoomsday = 2 - ((this.getJahr() / 100) % 4) * 2;
-		int jahrEndZahl = this.getJahr() % 100;
-		int doomsday = (jahrEndZahl + (jahrEndZahl / 4) + jahrHunderDoomsday) % 7;
+		int jahrHundertDoomsday = 2 - ((this.getJahr() / 100) % 4) * 2;
+		int JahrEndZahl = this.getJahr() % 100;
+		int doomsday = (JahrEndZahl + (JahrEndZahl / 4) + jahrHundertDoomsday) % 7;
+		int dayDoomsday = getMonatslaenge(1, this.getJahr()) + getMonatslaenge(2, this.getJahr());
 
-		if (isSchaltjahr(this.getJahr())) {
-			for (int i = 0; i < this.getMonat() - 1; i++) {
-				day += monatslaengenLeap[i];
-			}
-			if (day >= 60) {
-				day -= 60;
-				day %= 7;
-				day += doomsday;
-
-			} else {
-				while (day < 60) {
-					day += 7;
-				}
-				day -= 60;
-				day += doomsday;
-				day %= 7;
-
-			}
+		for (int i = 1; i < this.getMonat(); i++) {
+			day += getMonatslaenge(i, this.getJahr());
+		}
+		if (day >= dayDoomsday) {
+			day -= dayDoomsday;
+			day += doomsday;
+			day %= 7;
 		} else {
-			for (int i = 0; i < this.getMonat() - 1; i++) {
-				day += monatslaengen[i];
+			while (day < dayDoomsday) {
+				day += 7;
 			}
-			if (day >= 59) {
-				day -= 59;
-				day %= 7;
-				day += doomsday;
-				if (day >= 7) {
-					day %= 7;
-				}
-				System.out.println(day);
-			} else {
-				while (day < 59) {
-					day += 7;
-				}
-				day -= 59;
-				day += doomsday;
-				day %= 7;
-			}
+			day -= dayDoomsday;
+			day += doomsday;
+			day %= 7;
 		}
 		return wochentage[day];
 	}

@@ -88,5 +88,7 @@ public class DatumTest {
 	@Test
 	public void testGetWochentag() {
 		assertEquals("Fr", new Datum(20, 10, 2017).getWochentag());
+		assertEquals("Mo", new Datum(8,2,2016).getWochentag());
+		assertEquals("Fr", new Datum(24,12,2027).getWochentag());
 	}
 }
